@@ -89,3 +89,30 @@ public Node max(Node cur) {
     aftermax = max(cur->next);
     return cur.morethan(aftermax) ?  cur : aftermax;
 }
+
+
+public reverseLink(Node first) {
+    Stack<Node> stack = new Stack<Node>();
+    Node head = null, tmp, cur;
+    while(first != null) {
+        stack.push(first);
+        first = first.next;
+    }
+    while ((tmp = stack.pop()) != null)
+    {
+        if (head == null) {
+            cur = head = tmp;
+            cur.next = null;
+        } else  {
+            cur.next = tmp;
+            tmp.next = null;
+        }
+    }
+    return head;
+}
+
+
+            
+
+
+
