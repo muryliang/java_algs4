@@ -1,0 +1,91 @@
+public void delete(int k) {
+    Node prev , current;
+    int count = 0;
+    current = first;
+    if (first->next == null) {
+        first = null;
+        if (k == 0)
+            return 1;
+        else
+            return -1;
+    }
+    else {
+        for (int i = 1; i < k; i++) {
+            prev = first;
+            current = first->next;
+            while(current->next != null) {
+                prev = current;
+                current = current->next;
+            }
+            prev->next = null;
+        }
+        return current;
+
+    }
+}
+
+public void find(Item key) {
+    Node cur;
+
+    for(cur = first; cur != null; cur = cur->next) {
+        if (cur->item == key)
+            return true;
+    }
+    return false;
+}
+
+public void removeAfter(Node node) {
+    Node cur = first;
+
+    if (node == null)
+        return;
+    for (; cur != null; cur = cur->next)
+        if ((cur == node) && (cur->next != null))
+            cur->next = cur->next->next
+}
+
+public void insetAfter(Node first, Node second) {
+    if (!find(first) || second == null) return;
+    second->next = sec->next
+    sec->next = second;
+}
+
+public void remove(Node first, Item item) {
+    Node prev, cur;
+
+    if (first == null)
+        return;
+    if (first->next == null) {
+        if (first->item == item)
+            first = null;
+        return;
+    }
+
+    prev = first;
+    cur = first->next;
+    while(cur != null) {
+        if (cur->item == item) {
+            prev->next = cur->next;
+            continue;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
+}
+
+public Item max(Node first) {
+    Item res;
+    Node cur = first;
+    Node max = first;
+
+    for(; cur != null; cur= cur->next) {
+        cur.morethan( max);
+        max = cur;
+    }
+}
+
+public Node max(Node cur) {
+    Node aftermax;
+    aftermax = max(cur->next);
+    return cur.morethan(aftermax) ?  cur : aftermax;
+}
