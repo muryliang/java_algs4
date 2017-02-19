@@ -34,12 +34,6 @@ public class CircularLink<Item> implements Iterable<Item>{
             oldlast.next = last;
         }
         count++;
- //       int tmp = 0;
-//        Node<Item> cur = last.next;
-  //      for (; tmp < count; tmp++, cur = cur.next ) {
-   //         StdOut.print(cur.item + " count:" + tmp + " ");
-    //    StdOut.println("end");
-     //   }
     }
 
     public Item dequeue() {
