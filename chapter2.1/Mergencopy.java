@@ -3,26 +3,46 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
-public class Merge {
+public class Mergencopy {
     private static Comparable[] aux;
     public static void sort (Comparable[] a) {
         aux = new Comparable[a.length];
-        sort(a, 0, a.length-1);
+        System.arraycopy(a,0,aux,0,a.length);
+        sort(a, aux, 0, a.length-1);
     }
 
-    private static void sort(Comparable[] a, int lo, int hi) {
+    private static void sort(Comparable[] a, Comparable[] aux, int lo, int hi) {
         if (hi <= lo) return;
-        int mid = lo + (hi - lo) / 2;
-        sort(a, lo, mid);
-        sort(a, mid + 1, hi);
-        if (less(a[mid], a[mid+1])) return;
-        merge(a, lo, mid, hi);
+        if (hi - lo > 15) {
+            int mid = lo + (hi - lo) / 2;
+            sort(aux, a,  lo, mid);
+            sort(aux, a, mid + 1, hi);
+            if (less(aux[mid], aux[mid+1]))  {
+                System.arraycopy(aux, lo, a, lo, hi - lo + 1);
+                return;
+            }
+            merge(a, aux, lo, mid, hi);
+        }
+        else
+            insertSort(a, lo, hi);
     }
 
-    private static void merge(Comparable[] a, int lo, int mid, int hi) {
+
+    public static void insertSort (Comparable[] a, int lo, int hi) {
+        int length = hi - lo + 1;
+        for(int i = lo; i <= hi; i++) {
+            int j  = i - 1;
+            while (j >= lo && less(a[i], a[j]))
+                j -= 1;
+            Comparable t = a[i];
+            for (int k = i - 1; k > j; k--)
+                a[k + 1] = a[k];
+            a[j + 1] = t;
+        }
+    }
+
+    private static void merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {
         int i = lo, j = mid + 1;
-        for (int k = lo; k <= hi; k++)
-            aux[k] = a[k];
         for (int k = lo; k <= hi; k++) {
             if (i > mid) a[k] = aux[j++];
             else if (j > hi) a[k] = aux[i++];

@@ -9,6 +9,8 @@ public class sortcompare {
         else if (alg.equals("Selection")) Selection.sort(a);
         else if (alg.equals("Shell")) Shell.sort(a);
         else if (alg.equals("Merge")) Merge.sort(a);
+        else if (alg.equals("MergeInsert")) MergeInsert.sort(a);
+        else if (alg.equals("Mergencopy")) Mergencopy.sort(a);
         else StdOut.println("do not know alg");
         return prev.elapsedTime();
     }
