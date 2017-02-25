@@ -28,6 +28,7 @@ public class doubletest {
         if ( alg.equals("Insertion")) Insert.sort(a);
         else if ( alg.equals("Selection")) Selection.sort(a);
         else if ( alg.equals("Shell")) Shell.sort(a);
+        else if ( alg.equals("Merge")) Merge.sort(a);
         else StdOut.println(" unknown alg");
         return time.elapsedTime();
     }
@@ -47,6 +48,7 @@ public class doubletest {
         if ( alg.equals("Insertion")) bei = 4;
         else if ( alg.equals("Selection")) bei = 4;
         else if ( alg.equals("Shell")) bei = 2 * Math.sqrt(Math.sqrt(2));
+        else if ( alg.equals("Merge")) bei = 2;
         int times = Integer.parseInt(args[1]);
         String corner = "none";
         if (args.length == 3)
