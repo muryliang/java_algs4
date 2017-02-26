@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.QuickX;
 
 public class sortcompare {
     public static double time(String alg, Double[] a) {
@@ -11,6 +12,9 @@ public class sortcompare {
         else if (alg.equals("Merge")) Merge.sort(a);
         else if (alg.equals("MergeInsert")) MergeInsert.sort(a);
         else if (alg.equals("Mergencopy")) Mergencopy.sort(a);
+        else if (alg.equals("MergeBu")) MergeBu.sort(a);
+        else if (alg.equals("Quick")) Quick.sort(a);
+        else if (alg.equals("QuickX")) QuickX.sort(a);
         else StdOut.println("do not know alg");
         return prev.elapsedTime();
     }
@@ -36,6 +40,7 @@ public class sortcompare {
         StdOut.println("time is " + t1 + " " + t2);
         StdOut.printf("For %d random Doubles\n  %s is", N, alg1);
         StdOut.printf(" %.1f times faster than %s\n", t2/t1,  alg2);
+        StdOut.printf(" 6nlogn is %f\n", 6 * Math.log10(N)/ Math.log10(2) * N);
     }
 }
 

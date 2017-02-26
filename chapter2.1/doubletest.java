@@ -2,6 +2,7 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.QuickX;
 
 public class doubletest {
     public static double timeTrial(String alg, int N, String mode) {
@@ -31,6 +32,9 @@ public class doubletest {
         else if ( alg.equals("Merge")) Merge.sort(a);
         else if ( alg.equals("MergeInsert")) MergeInsert.sort(a);
         else if ( alg.equals("Mergencopy")) Mergencopy.sort(a);
+        else if ( alg.equals("MergeBu")) MergeBu.sort(a);
+        else if ( alg.equals("Quick")) Quick.sort(a);
+        else if ( alg.equals("QuickX")) QuickX.sort(a);
         else StdOut.println(" unknown alg");
         return time.elapsedTime();
     }
@@ -59,7 +63,7 @@ public class doubletest {
 //        StdDraw.setXscale(5, 30);
  //       StdDraw.setYscale(-1, 20);
   //      StdDraw.setPenRadius(0.01);
-        for (int N = 1024; true; N += N) {
+        for (int N = 128; true; N += N) {
             double time = 0;
             for(int i = 0; i < times; i++)
                 time += timeTrial(alg, N, corner);
