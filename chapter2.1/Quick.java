@@ -11,7 +11,7 @@ public class Quick {
     }
 
     private static void sort (Comparable[] a, int lo, int hi) {
-        if (hi <= lo + 15)  {
+        if (hi <= lo + 8)  {
             insertSort(a, lo, hi);
             return;
         }

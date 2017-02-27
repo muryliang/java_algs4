@@ -6,35 +6,39 @@ import edu.princeton.cs.algs4.StdRandom;
 public class Quickdup {
 
     public static void sort(Comparable[] a) {
-        StdRandom.shuffle(a);
+//        StdRandom.shuffle(a);
         sort(a, 0, a.length-1);
     }
 
     private static void sort (Comparable[] a, int lo, int hi) {
-        if (hi <= lo + 15)  {
+		int n = hi - lo + 1;
+        if (n <= 8)  {
             insertSort(a, lo, hi);
             return;
-        }
-        int mid = partition(a, lo, hi);
-        sort(a, lo, mid-1);
-        sort(a, mid + 1, hi);
-    }
-
-    private static int partition(Comparable[] a, int lo, int hi) {
-        int i  = lo, j = hi + 1;
-        int tmp = median( a, lo, lo + (hi - lo)/2, hi);
-//        StdOut.println("lo  hi mid tmp "+ a[lo] + " " +   a[hi] + " " + a[lo + (hi - lo) /2] + " " + a[tmp]);
-		exch(a, tmp, lo);
+        } else if (n <= 40) {
+			int tmp = median( a, lo, lo + n/2, hi);
+	//        StdOut.println("lo  hi mid tmp "+ a[lo] + " " +   a[hi] + " " + a[lo + (hi - lo) /2] + " " + a[tmp]);
+			exch(a, tmp, lo);
+		} else  {
+            int eps = n/8;
+            int mid = lo + n/2;
+            int m1 = median(a, lo, lo + eps, lo + eps + eps);
+            int m2 = median(a, mid - eps, mid, mid + eps);
+            int m3 = median(a, hi - eps - eps, hi - eps, hi); 
+            int ninther = median(a, m1, m2, m3);
+            exch(a, ninther, lo);
+        }   
+// use too many exchanges , we should have a replace method!
 		Comparable v = a[lo];
-        while (true) {
-            while (less(a[++i], v)) if (i == hi) break;
-            while (less(v, a[--j])) if (j == lo) break;
-            if (i >= j) break;
-            exch(a, i, j);
-        }
-        exch(a, lo, j);
-//        StdOut.printf("lo %d hi %d mid %d\n", lo, hi, j);
-        return j;
+		int lt = lo, i = lo+1, gt = hi;
+		while (i <= gt) {
+			int cmp = a[i].compareTo(v);
+			if (cmp < 0) exch(a, i++, lt++);
+			else if (cmp > 0) exch(a, i, gt--);
+			else i++;
+		}
+        sort(a, lo, lt-1);
+        sort(a, gt + 1, hi);
     }
 
 	private static int  median(Comparable[] a, int lo, int mid, int hi) {
