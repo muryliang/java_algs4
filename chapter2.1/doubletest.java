@@ -36,6 +36,8 @@ public class doubletest {
         else if ( alg.equals("Quick")) Quick.sort(a);
         else if ( alg.equals("QuickX")) QuickX.sort(a);
         else if ( alg.equals("Quickdup")) Quickdup.sort(a);
+        else if ( alg.equals("Quicknorecur")) Quicknorecur.sort(a);
+        else if ( alg.equals("Quickfast")) Quickfast.sort(a);
         else StdOut.println(" unknown alg");
         return time.elapsedTime();
     }
