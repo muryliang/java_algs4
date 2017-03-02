@@ -10,9 +10,9 @@ public class STable<Key extends Comparable<Key>, Item> {
 	}
 
 	private class Node<Key extends Comparable<Key>, Item> {
-		private Key key;
-		private Item item;
-		private Node next;
+		Key key;
+		Item item;
+		Node next;
 
 		public Node(Key mkey, Item mitem, Node next) {
 			key = mkey;
@@ -97,28 +97,30 @@ public class STable<Key extends Comparable<Key>, Item> {
 		if (!contains(key)) return null;
 		Key min = null;
 		for (Node x = first; x != null;x = x.next) {
-			if (less(x, key) {
+			if (less(x, key)) {
 				if (min == null)
-					min = x;
+					min = x.key;
 			} else {
-				if (less(min, x))
-					min = x;
+				if (less(min, x.key))
+					min = x.key;
 			}
 		}
+		return min;
 	}
 
 	public 	Key ceil(Key key) {
 		if (!contains(key)) return null;
 		Key max = null;
 		for (Node x = first; x != null;x = x.next) {
-			if (less(key, x) {
+			if (less(key, x.key)) {
 				if (max == null)
-					max = x;
+					max = x.key;
 			} else {
-				if (less(x, max))
-					max = x;
+				if (less(x.key, max))
+					max = x.key;
 			}
 		}
+		return max;
 	}
 
 	public int rank(Key key) {
@@ -129,6 +131,7 @@ public class STable<Key extends Comparable<Key>, Item> {
 		}
 	}
 
-	public Key select(int k) {
+//	public Key select(int k) {
 		
+}
 
