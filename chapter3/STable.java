@@ -112,12 +112,12 @@ public class STable<Key extends Comparable<Key>, Item> {
 		if (!contains(key)) return null;
 		Key max = null;
 		for (Node x = first; x != null;x = x.next) {
-			if (less(key, x.key)) {
+			if (less(key, (Key)x.key)) {
 				if (max == null)
-					max = x.key;
+					max = (Key)x.key;
 			} else {
-				if (less(x.key, max))
-					max = x.key;
+				if (less((Key)x.key, max))
+					max = (Key)x.key;
 			}
 		}
 		return max;
@@ -126,7 +126,7 @@ public class STable<Key extends Comparable<Key>, Item> {
 	public int rank(Key key) {
 		int count = 0;
 		for (Node x = first; x != null; x= x.next) {
-			if (less(x.key, key))
+			if (less((Key)x.key, key))
 				count++;
 		}
 	}
