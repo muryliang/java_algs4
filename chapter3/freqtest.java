@@ -8,6 +8,7 @@ public class freqtest {
 	public static void main(String[] args) {
 		int len = Integer.parseInt(args[0]);
 		STable<String, Integer> st = new STable<String, Integer>();
+//		ST<String, Integer> st = new ST<String, Integer>();
 
 		while (!StdIn.isEmpty()) {
 			String key = StdIn.readString();
