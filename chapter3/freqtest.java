@@ -7,7 +7,7 @@ import edu.princeton.cs.algs4.ST;
 public class freqtest {
 	public static void main(String[] args) {
 		int len = Integer.parseInt(args[0]);
-		ST<String, Integer> st = new ST<String, Integer>();
+		STable<String, Integer> st = new STable<String, Integer>();
 
 		while (!StdIn.isEmpty()) {
 			String key = StdIn.readString();

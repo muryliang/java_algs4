@@ -6,6 +6,7 @@ import edu.princeton.cs.algs4.ST;
 
 public class simpletest {
 	public static void main(String[] args) {
+//		STable<String, Integer> st = new STable<String, Integer>();
 		ST<String, Integer> st = new ST<String, Integer>();
 
 		for (int i = 0; !StdIn.isEmpty(); i++) {

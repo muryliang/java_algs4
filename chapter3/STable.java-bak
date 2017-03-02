@@ -1,17 +1,15 @@
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-import java.util.Iterator;
 
-public class STable<Key extends Comparable<Key>, Item> implements Iterable<Key>{
-	private Node first;
+public class STable<Key extends Comparable<Key>, Item> {
+	private Node<Key, Item> first;
 	private int count;
 
 	public STable() {
 		count = 0;
-		first = null;
 	}
 
-	private class Node {
+	private class Node<Key extends Comparable<Key>, Item> {
 		Key key;
 		Item item;
 		Node next;
@@ -71,8 +69,8 @@ public class STable<Key extends Comparable<Key>, Item> implements Iterable<Key>{
 		}
 	}
 
-	public Key min() {
-		if (size() == 0) return null;
+	public Item min() {
+		if (size == 0) return null;
 		Node min = first;
 		for (Node x = first.next; x != null; x = x.next) {
 			if (min.key.compareTo(x.key) > 0)
@@ -86,7 +84,7 @@ public class STable<Key extends Comparable<Key>, Item> implements Iterable<Key>{
 	}
 
 	public Key max() {
-		if (size() == 0) return null;
+		if (size == 0) return null;
 		Node max = first;
 		for (Node x = first.next; x != null; x = x.next) {
 			if (max.key.compareTo(x.key) < 0)
@@ -99,7 +97,7 @@ public class STable<Key extends Comparable<Key>, Item> implements Iterable<Key>{
 		if (!contains(key)) return null;
 		Key min = null;
 		for (Node x = first; x != null;x = x.next) {
-			if (less(x.key, key)) {
+			if (less(x, key)) {
 				if (min == null)
 					min = x.key;
 			} else {
@@ -114,12 +112,12 @@ public class STable<Key extends Comparable<Key>, Item> implements Iterable<Key>{
 		if (!contains(key)) return null;
 		Key max = null;
 		for (Node x = first; x != null;x = x.next) {
-			if (less(key, x.key)) {
+			if (less(key, (Key)x.key)) {
 				if (max == null)
-					max = x.key;
+					max = (Key)x.key;
 			} else {
-				if (less(x.key, max))
-					max = x.key;
+				if (less((Key)x.key, max))
+					max = (Key)x.key;
 			}
 		}
 		return max;
@@ -128,32 +126,12 @@ public class STable<Key extends Comparable<Key>, Item> implements Iterable<Key>{
 	public int rank(Key key) {
 		int count = 0;
 		for (Node x = first; x != null; x= x.next) {
-			if (less(x.key, key))
+			if (less((Key)x.key, key))
 				count++;
 		}
-		return count;
 	}
 
-	public Iterator<Key> iterator() {
-		return new ListIterator<Key>(first);
-	}
-
-	private class ListIterator<Key> implements Iterator<Key> {
-		private Node nd;
-		public ListIterator(Node first) {
-			nd = first;
-		}
-
-		public void remove() {return;}
-		public boolean hasNext() {
-			return nd != null;
-		}
-		public Key next() {
-			Key tmp = (Key)nd.key;
-			nd = nd.next;
-			return tmp;
-		}
-	}
 //	public Key select(int k) {
+		
 }
 
