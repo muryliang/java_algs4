@@ -53,7 +53,7 @@ public class norecursiveSTB<Key extends Comparable<Key>, Value> {
         Stack<Node> st = new Stack<Node>();
         Queue<Key> qu = new Queue<Key>();
         Node x = root;
-        while (x != null) {
+        while (x != null || !st.isEmpty()) {
             if (x != null) {
                 st.push(x);
                 x = x.left;
