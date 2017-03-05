@@ -78,3 +78,13 @@ public class rbtree<Key extends Comparable<Key>, Value> {
         return 1 + size(x.left) + size(x.right);
     }
 
+    public void deleteMin() {
+        root = deleteMin(root);
+        if (root == null) return;
+        root = BLACK;
+    }
+
+    private Node deleteMin(Node x) {
+        if (x == null) return null;
+        if (!isRed(x.left) && !isRed(x.right) && !isRed(x))
+    }
