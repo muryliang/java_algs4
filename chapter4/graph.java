@@ -4,16 +4,16 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.In;
 
 public class graph {
-	private Bag[] bag;
+	private Bag<Integer>[] bag;
 	int V;
 	int E;
 
 	public graph(int n) {
-		bag = (Bag[])new Bag[n];
+		bag = (Bag<Integer>[])new Bag[n];
 		V = n;
 		E = 0;
 		for (int i = 0; i < n; i++ )
-			bag[i] = new Bag();
+			bag[i] = new Bag<Integer>();
 	}
 
 	public graph(In in) {
