@@ -1,0 +1,11 @@
+1:
+    use import edu.princeton.cs.algs4.xxx;
+    in file: use xxx (function)
+    javac-algs4 file
+    java-algs4 file to run
+2:
+    use package edu.xxxxxx
+    in file, just use functions in package
+    javac-algs4 to compile
+    put class file in edu/princeton/cs/algs4 directory(you make that),
+    at the root out of edu/, java-algs4 edu/princeton/cs/algs4/xxx to run  (use "/" or ".")
