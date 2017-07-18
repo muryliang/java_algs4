@@ -43,34 +43,34 @@ public class Percolation {
         checkIndex(row, col);
         if (isOpen(row, col))
             return;
-        byte[] cur_status = {0,0,0,0};
 
-        byte tmpvar = 1;
-        if (row == 1) tmpvar |= 2;
-        if (row == line) tmpvar |= 4;
-        status[(row-1)*line+col-1] = tmpvar;
+        byte cur_status = 1;
+        if (row == 1) cur_status |= 2;
+        if (row == line) cur_status |= 4;
+        status[(row-1)*line+col-1] = cur_status;
 
         if (row > 1 && isOpen(row-1, col)) {
-            cur_status[0] = status[qf.find((row-2)*line + col-1)];
+            if (cur_status != 7) cur_status |= status[qf.find((row-2)*line + col-1)];
             qf.union((row-1)*line+col-1, (row-2)*line+col-1);
         }
 
         if (row < line && isOpen(row+1, col)) {
-            cur_status[1] = status[qf.find(row*line + col-1)];
+            if (cur_status != 7) cur_status |= status[qf.find(row*line + col-1)];
             qf.union((row-1)*line+col-1, row*line+col-1);
         }
         if (col > 1 && isOpen(row, col-1)) {
-            cur_status[2] = status[qf.find((row-1)*line + col-2)];
+            if (cur_status != 7) cur_status |= status[qf.find((row-1)*line + col-2)];
             qf.union((row-1)*line+col-1, (row-1)*line+col-2);
         }
 
         if (col < line && isOpen(row, col+1)) {
-            cur_status[3] = status[qf.find((row-1)*line + col)];
+            if (cur_status != 7) cur_status |= status[qf.find((row-1)*line + col)];
             qf.union((row-1)*line+col-1, (row-1)*line + col);
         }
 
-        status[qf.find((row-1)*line+col-1)] = (byte)(tmpvar | cur_status[0] | cur_status[1] | cur_status[2] | cur_status[3]);
-        if (status[qf.find((row-1)*line+col-1)] == 7)
+        froot = qf.find((row-1)*line+col-1);
+        status[froot] = cur_status;
+        if (percolated == false && status[froot] == 7)
            percolated = true;
 
         opened += 1;
