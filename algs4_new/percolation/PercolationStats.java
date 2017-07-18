@@ -6,13 +6,13 @@ import edu.princeton.cs.algs4.Stopwatch;
 public class PercolationStats {
     private final double[] rate;
     private final int loop;
-    private  double dmean = 0;
-    private  double dstddev = 0;
+    private  double dmean = Double.NaN;
+    private  double dstddev = Double.NaN;
 
     public PercolationStats(int n, int trials) {
+        if (trials <= 0) throw new IllegalArgumentException("try number error");
 		rate = new double[trials];
 		loop = trials;
-        if (trials <= 0) throw new IllegalArgumentException("try number error");
 		int x1, y1;
 		for (int i = 0; i < trials; i++) {
 			Percolation per = new Percolation(n);
@@ -22,7 +22,7 @@ public class PercolationStats {
 				if (!per.isOpen(x1, y1)) {
 					per.open(x1, y1);
 					if (per.percolates()) {
-						rate[i] = (float) per.numberOfOpenSites()/(n*n);
+						rate[i] = (double) per.numberOfOpenSites()/(n*n);
 						break;
 					}
 				}
@@ -31,12 +31,14 @@ public class PercolationStats {
 	}
 			
 	public double mean() {
-        dmean = StdStats.mean(rate);
+		if (Double.isNaN(dmean))
+			dmean = StdStats.mean(rate);
 		return dmean; 
 	}
 
 	public double stddev() {
-        dstddev = StdStats.stddev(rate);
+		if (Double.isNaN(dstddev)
+			dstddev = StdStats.stddev(rate);
 		return dstddev;
 	}
 
