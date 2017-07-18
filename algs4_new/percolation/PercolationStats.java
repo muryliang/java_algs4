@@ -37,7 +37,7 @@ public class PercolationStats {
 	}
 
 	public double stddev() {
-		if (Double.isNaN(dstddev)
+		if (Double.isNaN(dstddev))
 			dstddev = StdStats.stddev(rate);
 		return dstddev;
 	}
