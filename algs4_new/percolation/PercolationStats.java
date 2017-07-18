@@ -31,22 +31,26 @@ public class PercolationStats {
 	}
 			
 	public double mean() {
-		if (Double.isNaN(dmean))
-			dmean = StdStats.mean(rate);
-		return dmean; 
+		return StdStats.mean(rate);
 	}
 
 	public double stddev() {
-		if (Double.isNaN(dstddev))
-			dstddev = StdStats.stddev(rate);
-		return dstddev;
+		return StdStats.stddev(rate);
 	}
 
 	public double confidenceLo() {
+		if (Double.isNaN(dstddev))
+			dstddev = StdStats.stddev(rate);
+		if (Double.isNaN(dmean))
+			dmean = StdStats.mean(rate);
 		return dmean - 1.96*dstddev/Math.sqrt(loop);
 	}
 
 	public double confidenceHi() {
+		if (Double.isNaN(dstddev))
+			dstddev = StdStats.stddev(rate);
+		if (Double.isNaN(dmean))
+			dmean = StdStats.mean(rate);
 		return dmean + 1.96*dstddev/Math.sqrt(loop);
 	}
 

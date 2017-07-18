@@ -36,10 +36,11 @@ public class Percolation {
         // activate the corresponding virtual node
         if (row == 1) 
             qf.union((row-1)*line+col-1, line*line);
-        
+
 		// connect to surround
 		if (row > 1 && isOpen(row-1, col))
 			qf.union((row-1)*line+col-1, (row-2)*line+col-1);
+
 		// if the connecting bottom one is in last line, connect to bottom virtual node if full
 		if (row < line && isOpen(row+1, col)) {
 			qf.union((row-1)*line+col-1, (row)*line+col-1);
@@ -72,13 +73,6 @@ public class Percolation {
 	}
 
 	public boolean percolates() {
-	/*
-        if (!status[line*line]) return false;
-        for (int i = 0; i < line; i++)
-            if (qf.connected(line*line, (line-1)*line + i))
-                return true;
-        return false;
-	*/
 		return qf.connected(line*line, line*line+1);
 	}
 
