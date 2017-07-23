@@ -99,7 +99,7 @@ public class Deque<Item> implements Iterable<Item>  {
         }
     }
 
-    private static<T> void show(String str, Deque<T> de) {
+    private static <T> void show(String str, Deque<T> de) {
         StdOut.println(str);
         for (T item: de) {
             StdOut.print(item + " ");
