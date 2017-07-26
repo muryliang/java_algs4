@@ -127,5 +127,11 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
+        Point one = new Point(1,1);
+        Point two = new Point(2,2);
+        Point three = new Point(-1, 1);
+        Point origin = new Point(0,0);
+        one.draw();
+        two.draw();
     }
 }
