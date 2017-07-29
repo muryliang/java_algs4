@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
@@ -7,7 +8,6 @@ import edu.princeton.cs.algs4.StdOut;
 public class FastCollinearPoints {
 
     private LineSegment[] seg;
-    private int linecount = 0;
 
     public FastCollinearPoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
@@ -15,7 +15,13 @@ public class FastCollinearPoints {
             if (check == null)
                 throw new IllegalArgumentException();
 
-        Pair[] line = new Pair[2*points.length];
+        points = Arrays.copyOf(points, points.length);
+        Arrays.sort(points);
+        for (int i = 1; i < points.length; i++)
+            if (points[i].compareTo(points[i-1]) == 0)
+                throw new IllegalArgumentException();
+
+        Darray line = new Darray();
         Point[] tmp = new Point[points.length-1];
 
         int count, start, end;
@@ -35,13 +41,14 @@ public class FastCollinearPoints {
                     if (end - start >= 3) {
                         Arrays.sort(tmp, start, end);
                         if (points[i].compareTo(tmp[start]) < 0)  {
-                            line[linecount++] = new Pair(points[i], tmp[end-1]);
+//                            line[linecount++] = new Pair(points[i], tmp[end-1]);
+                            line.add(new Pair(points[i], tmp[end-1]));
                         }
                         else if (points[i].compareTo(tmp[end-1]) > 0) {
-                            line[linecount++] = new Pair(tmp[start], points[i]);
+                            line.add(new Pair(tmp[start], points[i]));
                         }
                         else {
-                            line[linecount++] = new Pair(tmp[start], tmp[end-1]);
+                            line.add(new Pair(tmp[start], tmp[end-1]));
                         }
                         /*
                         for (int k = 0; k < end-start; k++)
@@ -54,30 +61,35 @@ public class FastCollinearPoints {
                 end++;
             }
         }             
-//        StdOut.println("success out, linecount " + linecount);
-        Arrays.sort(line, 0, linecount,  Pair.pairCmp());
-        if (linecount != 0) {
+/*        StdOut.println("success out, linecount " + linecount);
+        for (Pair p:line) 
+            StdOut.print(p);
+        StdOut.println("all printed");
+*/
+        line.sort();
+        if (!line.isEmpty()) {
             int index = 1;
-            for (int k = 1; k < linecount; k++)
-                if (line[k].compareTo(line[k-1]) != 0)
+            for (int k = 1; k < line.size(); k++)
+                if (line.get(k).compareTo(line.get(k-1)) != 0)
                     index++;
             seg = new LineSegment[index];
-            seg[0] = new LineSegment(line[0].getP(), line[1].getQ());
+            seg[0] = new LineSegment(line.get(0).getP(), line.get(0).getQ());
             index = 1;
-            for (int k = 1; k < linecount; k++)
-                if (line[k].compareTo(line[k-1]) != 0)
-                    seg[index++] = new LineSegment(line[k].getP(), line[k].getQ());
+            for (int k = 1; k < line.size(); k++)
+                if (line.get(k).compareTo(line.get(k-1)) != 0)
+                    seg[index++] = new LineSegment(line.get(k).getP(), line.get(k).getQ());
         } else 
             seg = new LineSegment[0];
 
     }
 
     public int numberOfSegments() {
-        return linecount;
+        return seg.length;
     }
 
     public LineSegment[] segments() {
-        return seg;
+//        return seg;
+        return Arrays.copyOf(seg, seg.length);
     }
 
     public static void main(String[] args) {
@@ -139,5 +151,70 @@ class Pair implements Comparable<Pair> {
             }
         };
     }
+
+    public String toString() {
+        return " [ " + p + " " + q + " ] ";
+    }
 }
 
+class Darray implements Iterable<Pair> {
+    private Pair[] parray;
+    private int size;
+
+    public Darray() {
+        parray = new Pair[1];
+        size = 0;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public void add(Pair p) {
+        if (parray.length == size)
+            resize(2*size);
+        parray[size++] = p;
+    }
+
+    private void resize(int len) {
+        Pair[] tmparray = new Pair[len];
+        for (int i = 0; i < size; i++)
+            tmparray[i] = parray[i];
+        parray = tmparray;
+    }
+
+    public int size() { 
+        return size;
+    }
+
+    public Pair get(int index) {
+        return parray[index];
+    }
+
+    public Iterator<Pair> iterator() {
+        return new listIterator();
+    }
+
+    public void sort() {
+        Arrays.sort(parray, 0, size, Pair.pairCmp());
+    }
+
+    private class listIterator implements Iterator<Pair> {
+        private Pair[] tmplist;
+        private int siz;
+        private int count;
+
+        public listIterator() {
+            tmplist = parray;
+            siz = size;
+            count = 0;
+        }
+        
+        public boolean hasNext() { return count != siz;}
+        public Pair next() {
+            return tmplist[count++];
+        }
+        public void remove() {}
+    }
+}
+    

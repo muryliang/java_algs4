@@ -5,14 +5,21 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class BruteCollinearPoints {
 
-    private int segments;
     private int count;
     private LineSegment[] lineseg;
 
     public BruteCollinearPoints(Point[] points) {
         if (points == null) throw new IllegalArgumentException();
-        LineSegment[] line = new LineSegment[points.length];
-        segments = 0;
+        for (int i = 0; i < points.length; i++)
+            if (points[i] == null)
+                throw new IllegalArgumentException();
+        Point[] tmppoints = Arrays.copyOf(points, points.length);
+        Arrays.sort(tmppoints);
+        for (int i = 1; i < tmppoints.length; i++)
+            if (tmppoints[i].compareTo(tmppoints[i-1]) == 0)
+                throw new IllegalArgumentException();
+
+        LineSegment[] line = new LineSegment[2*points.length];
         count = 0;
 
         for (int i = 0; i < points.length; i++)
@@ -32,11 +39,11 @@ public class BruteCollinearPoints {
     }
 
     public int numberOfSegments() {
-        return segments;
+        return lineseg.length;
     }
 
     public LineSegment[] segments() {
-        return lineseg;
+        return Arrays.copyOf(lineseg, lineseg.length);
     }
 
     public static void main(String[] args) {
