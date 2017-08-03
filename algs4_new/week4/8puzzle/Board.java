@@ -27,7 +27,7 @@ public class Board {
         int mod = len*len;
         for (int i = 0; i < len; i++)
             for (int j = 0; j < len; j++)
-                if (i*len+j != mod && blocks[i][j] != i*len+j+1)
+                if (i*len+j != mod-1 && blocks[i][j] != i*len+j+1)
                     hamm++;
         return hamm;
     }
@@ -56,14 +56,13 @@ public class Board {
     }
 
     public boolean isGoal() {
-        return manhattan() == 0;
+        if (man == -1) 
+            return manhattan() == 0; // also store in the man
+        return man == 0;
     }
 
     public Board twin() {
-        int[][] blk = new int[len][len];
-        for (int i = 0; i < len; i++) 
-            for (int j = 0; j < len; j++)
-                blk[i][j] = blocks[i][j];
+        int[][] blk = blocks;
         int x1 = 0, y1 = 0;
         int x2 = 0, y2 = 1;
         if (blk[x1][y1] == 0 || blk[x2][y2] == 0) {
@@ -72,7 +71,9 @@ public class Board {
         }
         
         swap(blk, x1, y1, x2, y2);
-        return new Board(blk);
+        Board res = new Board(blk);
+        swap(blk, x1, y1, x2, y2);
+        return res;
     }
 
     public boolean equals(Object y) {
@@ -80,6 +81,7 @@ public class Board {
         if (y == null) return false;
         if (this.getClass() != y.getClass()) return false;
         Board other = (Board) y;
+        if (other.dimension() != dimension()) return false;
         for (int i = 0; i < len; i++)
             for (int j = 0; j < len; j++)
                 if (blocks[i][j] != other.blocks[i][j])
@@ -127,10 +129,7 @@ public class Board {
 
         public Board next() {
             Board bd = null;
-            int[][] tmpblk = new int[N][N];
-            for (int i = 0; i < N; i++) 
-                for (int j = 0; j < N; j++)
-                    tmpblk[i][j] = blk[i][j];
+            int[][] tmpblk = blk;
 //            System.out.printf("now x, y, %d %d\n", x, y);
 
             for (int i = 0; i < count.length; i++) {
@@ -138,6 +137,7 @@ public class Board {
                     if (i == 0 && x != 0) {
                         swap(tmpblk, x, y, x-1, y);
                         bd =  new Board(tmpblk);
+                        swap(tmpblk, x, y, x-1, y);
                         count[i] = 1;
                         tmp++;
                         break;
@@ -145,6 +145,7 @@ public class Board {
                     else if (i == 1 && x != len-1) {
                         swap(tmpblk, x, y, x+1, y);
                         bd =  new Board(tmpblk);
+                        swap(tmpblk, x, y, x+1, y);
                         count[i] = 1;
                         tmp++;
                         break;
@@ -152,6 +153,7 @@ public class Board {
                     else if (i == 2 && y != 0) {
                         swap(tmpblk, x, y, x, y-1);
                         bd =  new Board(tmpblk);
+                        swap(tmpblk, x, y, x, y-1);
                         count[i] = 1;
                         tmp++;
                         break;
@@ -159,6 +161,7 @@ public class Board {
                     else if (i == 3 && y != len-1) {
                         swap(tmpblk, x, y, x, y+1);
                         bd =  new Board(tmpblk);
+                        swap(tmpblk, x, y, x, y+1);
                         count[i] = 1;
                         tmp++;
                         break;
@@ -182,10 +185,16 @@ public class Board {
     }
 
     public String toString() {
+        int sum = len*len -1;
+        int bits = 1;
+        while (sum != 0) {
+            sum /= 10;
+            bits ++;
+        }
         String str1 = String.format("%d\n", len);
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < len; j++) {
-                str1 = str1 + String.format("%2d", blocks[i][j]);
+                str1 = str1 + String.format("%" + bits + "d", blocks[i][j]);
             }
             str1 = str1 + String.format("\n");
         }

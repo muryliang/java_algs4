@@ -5,23 +5,21 @@ import java.util.Iterator;
 import java.util.Comparator;
 
 public class Solver {
-    private int moves;
     private Node last;
-    private boolean sovable;
+    private boolean solvable;
 
     // need to consider the swapped one that also should use this method at the same time, so we can know
-    // unsovalbe, one of these two must be solvable
+    // unsolvalbe, one of these two must be solvable
     public Solver(Board initial) {
         if (initial == null) throw new IllegalArgumentException();
-        moves = -1;
         last = null;
-        sovable = false;
+        solvable = false;
         Node tmp = new Node(null, 0, initial);
         MinPQ<Node> pq = new MinPQ<Node>(new Comparator<Node>() {
             public int compare(Node a, Node b) {
-                if (a.getCurr().manhattan() + a.getMove() < b.getCurr().manhattan() + b.getMove())
+                if (a.getMan() + a.getMove() < b.getMan() + b.getMove())
                     return -1;
-                else if (a.getCurr().manhattan() + a.getMove() == b.getCurr().manhattan() + b.getMove())
+                else if (a.getMan() + a.getMove() == b.getMan() + b.getMove())
                     return 0;
                 else 
                     return 1;
@@ -34,9 +32,9 @@ public class Solver {
         Node tmp2 = new Node(null, 0, initial.twin());
         MinPQ<Node> pq2 = new MinPQ<Node>(new Comparator<Node>() {
             public int compare(Node a, Node b) {
-                if (a.getCurr().manhattan() < b.getCurr().manhattan())
+                if (a.getMan() < b.getMan())
                     return -1;
-                else if (a.getCurr().manhattan() == b.getCurr().manhattan())
+                else if (a.getMan() == b.getMan())
                     return 0;
                 else 
                     return 1;
@@ -50,12 +48,12 @@ public class Solver {
 //            System.out.printf("after del pq size %d, pq2 size %d\n", pq.size(), pq2.size());
             if (cur.getCurr().isGoal()) {
                 last = cur;
-                sovable = true;
+                solvable = true;
                 break;
             }
 //            System.out.printf("pickout second\n %s\n", cur2.getCurr());
             if (cur2.getCurr().isGoal()) {
-                sovable = false;
+                solvable = false;
                 last = null;
                 break;
             }
@@ -77,14 +75,19 @@ public class Solver {
     }
 
     public boolean isSolvable() {
-        return sovable;
+        return solvable;
     }
 
     public int moves() {
-        return last.getMove();
+        if (last != null)
+            return last.getMove();
+        else 
+            return -1;
     }
 
     public Iterable<Board> solution() {
+        if (!solvable) return null;
+
         return new Iterable<Board>() {
             public Iterator<Board> iterator() {
                 return new ListIterator();
@@ -145,11 +148,14 @@ class Node {
     private Node prev;
     private int moves;
     private Board curr;
+    private int man, hamm;
 
     public Node(Node prev, int moves, Board curr) {
         this.prev = prev;
         this.moves = moves;
         this.curr = curr;
+        this.man = curr.manhattan();
+        this.hamm = curr.hamming();
     }
 
     public Node getPrev() {
@@ -162,6 +168,14 @@ class Node {
 
     public int getMove() {
         return moves;
+    }
+
+    public int getMan() {
+        return man;
+    }
+
+    public int getHamm() {
+        return hamm;
     }
 }
 
