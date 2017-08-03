@@ -64,10 +64,10 @@ public class Board {
     public Board twin() {
         int[][] blk = blocks;
         int x1 = 0, y1 = 0;
-        int x2 = 0, y2 = 1;
+        int x2 = 1, y2 = 1;
         if (blk[x1][y1] == 0 || blk[x2][y2] == 0) {
             x1++;
-            x2++;
+            x2--;
         }
         
         swap(blk, x1, y1, x2, y2);
