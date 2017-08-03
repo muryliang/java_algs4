@@ -6,6 +6,7 @@ public class Board {
     private int hamm, man;
 
     public Board(int[][] blocks) {
+        if (blocks == null) throw new IllegalArgumentException();
         len = blocks.length;
         this.blocks = new int[len][len];
         for (int i = 0; i < len; i++) 
@@ -40,16 +41,22 @@ public class Board {
             for (int j = 0; j < len; j++) 
                 if (blocks[i][j] != 0) {
                     y = (blocks[i][j]-1) % len;
-                    x = (blocks[i][j]-1) % len;
-                    man += y - j >= 0 ? y - j : j - y;
-                    man += x - i >= 0 ? x - i : i - x;
+                    x = (blocks[i][j]-1) / len;
+                    if (y - j >= 0) 
+                        man += y - j;
+                    else 
+                        man += j - y;
+                    if (x - i >= 0) 
+                        man += x - i;
+                    else 
+                        man += i - x;
                 }
         return  man;
 
     }
 
     public boolean isGoal() {
-        return hamming() == 0;
+        return manhattan() == 0;
     }
 
     public Board twin() {
@@ -59,14 +66,12 @@ public class Board {
                 blk[i][j] = blocks[i][j];
         int x1 = 0, y1 = 0;
         int x2 = 0, y2 = 1;
-        if (blk[x1][y1] == 0)
+        if (blk[x1][y1] == 0 || blk[x2][y2] == 0) {
             x1++;
-        else if (blk[x2][y2] == 0)
             x2++;
+        }
         
-        int tmp = blk[x1][y1];
-        blk[x1][y1] = blk[x2][y2];
-        blk[x2][y2] = tmp;
+        swap(blk, x1, y1, x2, y2);
         return new Board(blk);
     }
 
@@ -74,7 +79,7 @@ public class Board {
         if (this == y) return true;
         if (y == null) return false;
         if (this.getClass() != y.getClass()) return false;
-        Board other = (Board)y;
+        Board other = (Board) y;
         for (int i = 0; i < len; i++)
             for (int j = 0; j < len; j++)
                 if (blocks[i][j] != other.blocks[i][j])
@@ -97,7 +102,9 @@ public class Board {
         private int[][] blk;
         private int N;
         private int x, y;
-        private int count;
+        private int tmp;
+        private int ways;
+        private int[] count = {0, 0, 0, 0};
 
         public ListIterator() {
             blk = blocks;
@@ -108,11 +115,14 @@ public class Board {
                         x = i;
                         y = j;
                     }
-            count = 0;
+            ways = 4;
+            tmp = 0;
+            if (x == 0 || x == len -1) ways -= 1;
+            if (y == 0 || y == len -1) ways -= 1;
         }
 
         public boolean hasNext() {
-            return count != 4;
+            return tmp != ways;
         }
 
         public Board next() {
@@ -121,46 +131,48 @@ public class Board {
             for (int i = 0; i < N; i++) 
                 for (int j = 0; j < N; j++)
                     tmpblk[i][j] = blk[i][j];
-            switch (count) {
-            case 0:
-                if (x != 0) {
-                    swap(tmpblk, x, y, x-1, y);
-                    count ++;
-                    bd =  new Board(tmpblk);
-                } 
-                count ++;
-                // break through
-            case 1: 
-                if (x != len-1) {
-                    swap(tmpblk, x, y, x+1, y);
-                    count ++;
-                    bd =  new Board(tmpblk);
+//            System.out.printf("now x, y, %d %d\n", x, y);
+
+            for (int i = 0; i < count.length; i++) {
+                if (count[i] == 0) {
+                    if (i == 0 && x != 0) {
+                        swap(tmpblk, x, y, x-1, y);
+                        bd =  new Board(tmpblk);
+                        count[i] = 1;
+                        tmp++;
+                        break;
+                    } 
+                    else if (i == 1 && x != len-1) {
+                        swap(tmpblk, x, y, x+1, y);
+                        bd =  new Board(tmpblk);
+                        count[i] = 1;
+                        tmp++;
+                        break;
+                    } 
+                    else if (i == 2 && y != 0) {
+                        swap(tmpblk, x, y, x, y-1);
+                        bd =  new Board(tmpblk);
+                        count[i] = 1;
+                        tmp++;
+                        break;
+                    } 
+                    else if (i == 3 && y != len-1) {
+                        swap(tmpblk, x, y, x, y+1);
+                        bd =  new Board(tmpblk);
+                        count[i] = 1;
+                        tmp++;
+                        break;
+                    }
+                    else {
+                        count[i] = 1;
+                    }
                 }
-                count ++;
-                // break through
-            case 2:
-                if (y != 0) {
-                    swap(tmpblk, x, y, x, y-1);
-                    count ++;
-                    bd =  new Board(tmpblk);
-                }
-                count ++;
-                //break through
-            case 3:
-                if (y != len-1) {
-                    swap(tmpblk, x, y, x, y+1);
-                    count ++;
-                    bd =  new Board(tmpblk);
-                }
-                count ++;
-                break;
-            default:
-                break;
-             }
-             return bd;
+            }
+//            System.out.printf("returned %s tmp is %d, ways is %d\n", bd, tmp, ways);
+            return bd;
         }
 
-        public void remove() {}
+        public void remove() { }
     }
 
     private void swap(int[][] bk, int x, int y, int m, int n) {
@@ -171,12 +183,14 @@ public class Board {
 
     public String toString() {
         String str1 = String.format("%d\n", len);
-        for (int i = 0; i < len; i++)
-            for (int j = 0; j < len; j++)
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
                 str1 = str1 + String.format("%2d", blocks[i][j]);
+            }
             str1 = str1 + String.format("\n");
+        }
         return str1;
     }
 
-    public static void main(String[] args) {}
+    public static void main(String[] args) { }
 }

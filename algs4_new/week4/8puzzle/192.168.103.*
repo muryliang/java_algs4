@@ -1,0 +1,2 @@
+# Nmap 7.50 scan initiated Thu Aug  3 10:04:14 2017 as: nmap -sT -p 22 -oG 192.168.103.*
+# Nmap done at Thu Aug  3 10:04:14 2017 -- 0 IP addresses (0 hosts up) scanned in 0.05 seconds
