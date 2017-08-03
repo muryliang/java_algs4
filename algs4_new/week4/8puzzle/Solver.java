@@ -148,14 +148,13 @@ class Node {
     private Node prev;
     private int moves;
     private Board curr;
-    private int man, hamm;
+    private int man;
 
     public Node(Node prev, int moves, Board curr) {
         this.prev = prev;
         this.moves = moves;
         this.curr = curr;
         this.man = curr.manhattan();
-        this.hamm = curr.hamming();
     }
 
     public Node getPrev() {
@@ -174,8 +173,5 @@ class Node {
         return man;
     }
 
-    public int getHamm() {
-        return hamm;
-    }
 }
 
