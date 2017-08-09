@@ -1,7 +1,6 @@
 import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.Point2D;
-import edu.princeton.cs.algs4.StdOut;
 
 public class PointSET {
     private SET<Point2D> set;
@@ -41,11 +40,6 @@ public class PointSET {
             if (rect.contains(p))
                 ps.add(p);
         }
-        /*
-        StdOut.println("in brute");
-        StdOut.println(ps);
-        StdOut.println("over brute");
-        */
         return ps;
 
     }

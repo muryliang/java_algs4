@@ -1,12 +1,11 @@
 import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.Point2D;
-import edu.princeton.cs.algs4.StdOut;
+//import edu.princeton.cs.algs4.StdOut;
 
 public class KdTree {
     private Node root;
     private int size;
-    private int kk;
 
     public KdTree() {
         root = null;
@@ -24,24 +23,28 @@ public class KdTree {
     public void insert(Point2D p) {
         // 0 for horizon, 1 for vertical
         if (p == null) throw new IllegalArgumentException();
-        root = insertInto(p, root, false);
-        size += 1;
-        kk = 0;
-//        printall(root);
- //       StdOut.printf("over, kk is %d\n", kk);
+        if (!contains(p)) {
+            root = insertInto(p, root, false);
+        }
     }
-
+/*
     private void printall(Node tmp) {
         if (tmp == null) return;
         printall(tmp.getLeft());
-        kk += 1;
+        StdOut.printf(" (%f, %f) ", tmp.x(), tmp.y());
         printall(tmp.getRight());
     }
+    */
 
     private Node insertInto(Point2D p, Node cur, boolean direction) {
         if (cur == null) {
+            size += 1;
             return new Node(p, direction);
         }
+        /*
+        if (cur.equals(p))
+            return cur;
+            */
 
         if (cur.isHorizon()) {
             if (p.y() <= cur.y()) { 
@@ -68,13 +71,17 @@ public class KdTree {
         Node tmp = root;
         while (tmp != null) {
             if (tmp.equals(search)) return true;
-            if (tmp.isHorizon()) {
+            if (!tmp.isHorizon()) {
                 if (p.x() <= tmp.x()) tmp = tmp.getLeft();
                 else tmp = tmp.getRight();
             }
             else {
-                if (p.y() <= tmp.y()) tmp = tmp.getLeft();
-                else tmp = tmp.getRight();
+                if (p.y() <= tmp.y()) { 
+                    tmp = tmp.getLeft();
+                }
+                else {
+                    tmp = tmp.getRight();
+                }
             }
         }
         return false;
@@ -98,7 +105,6 @@ public class KdTree {
         SET<Point2D> ps;
         ps = new SET<Point2D>();
         search(root, rect, ps);
-//        StdOut.println(ps);
         return ps;
     }
 
@@ -109,9 +115,9 @@ public class KdTree {
             }
 
             if (tmp.isHorizon()) {
-                if (tmp.y() <= rect.ymin())
+                if (tmp.y() < rect.ymin())
                     search(tmp.getRight(), rect, ps);
-                else if(tmp.y() >= rect.ymax())
+                else if(tmp.y() > rect.ymax())
                     search(tmp.getLeft(), rect, ps);
                 else {
                     search(tmp.getRight(), rect, ps);
@@ -120,9 +126,9 @@ public class KdTree {
             }
             // vertical
             else {
-                if (tmp.x() <= rect.xmin())
+                if (tmp.x() < rect.xmin())
                     search(tmp.getRight(), rect, ps);
-                else if (tmp.x() >= rect.xmax())
+                else if (tmp.x() > rect.xmax())
                     search(tmp.getLeft(), rect, ps);
                 else {
                     search(tmp.getRight(), rect, ps);
@@ -134,6 +140,7 @@ public class KdTree {
 
     public Point2D nearest(Point2D p) {
         if (p == null) throw new IllegalArgumentException();
+        if (root == null) return null;
         return curNearest(p, root, root.point());
     }
 
