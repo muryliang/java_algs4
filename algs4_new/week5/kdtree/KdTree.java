@@ -1,42 +1,70 @@
 import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.StdOut;
 
 public class KdTree {
     private Node root;
+    private int size;
+    private int kk;
+
     public KdTree() {
         root = null;
+        size = 0;
     }
 
     public boolean isEmpty() {
+        return root == null;
     }
 
     public int size() {
+        return size;
     }
 
     public void insert(Point2D p) {
         // 0 for horizon, 1 for vertical
         if (p == null) throw new IllegalArgumentException();
         root = insertInto(p, root, false);
+        size += 1;
+        kk = 0;
+//        printall(root);
+ //       StdOut.printf("over, kk is %d\n", kk);
+    }
+
+    private void printall(Node tmp) {
+        if (tmp == null) return;
+        printall(tmp.getLeft());
+        kk += 1;
+        printall(tmp.getRight());
     }
 
     private Node insertInto(Point2D p, Node cur, boolean direction) {
-        if (cur == null)
+        if (cur == null) {
             return new Node(p, direction);
+        }
 
         if (cur.isHorizon()) {
-            if (p.y() <= cur.y()) return insertInto(p, cur.getLeft(), false);
-            else return insertInto(p, cur.getRight(), false);
+            if (p.y() <= cur.y()) { 
+                cur.setLeft(insertInto(p, cur.getLeft(), false));
+            }
+            else {
+                cur.setRight(insertInto(p, cur.getRight(), false));
+            }
         }
         else {
-            if (p.x() <= cur.x()) return insertInto(p, cur.getLeft(), true);
-            else return insertInto(p, cur.getRight(), true);
+            if (p.x() <= cur.x()) { 
+                cur.setLeft(insertInto(p, cur.getLeft(), true));
+            }
+            else {
+                cur.setRight(insertInto(p, cur.getRight(), true));
+            }
         }
+        return cur;
     }
 
     public boolean contains(Point2D p) {
         if (p == null) throw new IllegalArgumentException();
-        Node search = new Node(p, 1);
+        Node search = new Node(p, true);
         Node tmp = root;
         while (tmp != null) {
             if (tmp.equals(search)) return true;
@@ -53,13 +81,13 @@ public class KdTree {
     }
 
     public void draw() {
-        pDraw(root);
+        pdraw(root);
     }
 
     private void pdraw(Node node) {
         node.draw();
-        node left = node.getLeft();
-        node right = node.getRight();
+        Node left = node.getLeft();
+        Node right = node.getRight();
         if (left != null) pdraw(left);
         if (right != null) pdraw(right);
     }
@@ -70,54 +98,62 @@ public class KdTree {
         SET<Point2D> ps;
         ps = new SET<Point2D>();
         search(root, rect, ps);
+//        StdOut.println(ps);
         return ps;
     }
 
     private void search(Node tmp, RectHV rect, SET<Point2D> ps) {
         if (tmp != null) {
-            if (rect.contains(tmp)) {
-                ps.add(tmp);
-                search(tmp.getLeft(), rect, ps);
-                search(tmp.getRight(), rect, ps);
+            if (rect.contains(tmp.point())) {
+                ps.add(tmp.point());
             }
-            else if (tmp.isHorizon()) {
-                if (tmp.y() < rect.ymin())
+
+            if (tmp.isHorizon()) {
+                if (tmp.y() <= rect.ymin())
                     search(tmp.getRight(), rect, ps);
-                else
+                else if(tmp.y() >= rect.ymax())
                     search(tmp.getLeft(), rect, ps);
+                else {
+                    search(tmp.getRight(), rect, ps);
+                    search(tmp.getLeft(), rect, ps);
+                }
             }
+            // vertical
             else {
-                if (tmp.x() < rect.xmin())
+                if (tmp.x() <= rect.xmin())
                     search(tmp.getRight(), rect, ps);
-                else
+                else if (tmp.x() >= rect.xmax())
                     search(tmp.getLeft(), rect, ps);
+                else {
+                    search(tmp.getRight(), rect, ps);
+                    search(tmp.getLeft(), rect, ps);
+                }
             }
         }
     }
 
     public Point2D nearest(Point2D p) {
         if (p == null) throw new IllegalArgumentException();
-        double min = curNearest(p, root, Double.POSITIVE_INFINITY);
-        return min;
+        return curNearest(p, root, root.point());
     }
 
-    private double curNearest(Point2D p, Node tmp, double curMinDis) {
-        // if zero, just return
-        if (curMinDis == 0.0) return curMinDis;
-        double curmin =  tmp.distanceTo(p);
-        if (curmin > curMinDis)
+    private Point2D curNearest(Point2D p, Node tmp, Point2D curMinDis) {
+        if (tmp == null) return curMinDis;
+        Point2D curmin = tmp.point();
+        if (curmin.distanceTo(p) > curMinDis.distanceTo(p))
             curmin = curMinDis;
+        // now curmin is the current min point
         if (tmp.isHorizon()) {
             if (p.y() <= tmp.y()) {
                 curmin = curNearest(p, tmp.getLeft(), curmin);
-                if (curmin > tmp.y() - p.y()) {
+                if (curmin.distanceTo(p) > tmp.y() - p.y()) {
                     curmin = curNearest(p, tmp.getRight(), curmin);
                 }
                 return curmin;
             }
             else {
                 curmin = curNearest(p, tmp.getRight(), curmin);
-                if (curmin > p.y() - tmp.y()) {
+                if (curmin.distanceTo(p) > p.y() - tmp.y()) {
                     curmin = curNearest(p, tmp.getLeft(), curmin);
                 }
                 return curmin;
@@ -126,14 +162,14 @@ public class KdTree {
         else {
             if (p.x() <= tmp.x()) {
                 curmin = curNearest(p, tmp.getLeft(), curmin);
-                if (curmin > tmp.x() - p.x()) {
+                if (curmin.distanceTo(p) > tmp.x() - p.x()) {
                     curmin = curNearest(p, tmp.getRight(), curmin);
                 }
                 return curmin;
             }
             else {
                 curmin = curNearest(p, tmp.getRight(), curmin);
-                if (curmin > p.x() - tmp.x()) {
+                if (curmin.distanceTo(p) > p.x() - tmp.x()) {
                     curmin = curNearest(p, tmp.getLeft(), curmin);
                 }
                 return curmin;
@@ -201,5 +237,9 @@ class Node {
         else {
             new Point2D(p.x(), 0).drawTo(new Point2D(p.x(), 1));
         }
+    }
+
+    public Point2D point() {
+        return p;
     }
 }

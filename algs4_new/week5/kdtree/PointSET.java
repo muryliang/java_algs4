@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.StdOut;
 
 public class PointSET {
     private SET<Point2D> set;
@@ -40,12 +41,18 @@ public class PointSET {
             if (rect.contains(p))
                 ps.add(p);
         }
+        /*
+        StdOut.println("in brute");
+        StdOut.println(ps);
+        StdOut.println("over brute");
+        */
         return ps;
+
     }
 
     public Point2D nearest(Point2D p) {
         if (p == null) throw new IllegalArgumentException();
-        double min = 0;
+        double min = Double.POSITIVE_INFINITY;
         Point2D minp = null;
         for (Point2D tmpp: set) {
             double tmpmin = tmpp.distanceTo(p);
