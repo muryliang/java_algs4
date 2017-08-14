@@ -31,10 +31,12 @@ public class TxHandler {
                 return false;
         }
         // 2
-        Transaction.Output op;
-        for (Transaction.Input ip: ips) {
-            op = up.getTxOutput(new UTXO(ip.prevTxHash, ip.outputIndex));
-            if (!Crypto.verifySignature(op.address, tx.getRawDataToSign(ip.outputIndex), ip.prevTxHash))
+        Transaction.Output top;
+        Transaction.Input tip;
+        for (int i = 0; i < tx.numInputs(); i++) {
+            tip = tx.getInput(i);
+            top = up.getTxOutput(new UTXO(tip.prevTxHash, tip.outputIndex));
+            if (!Crypto.verifySignature(top.address, tx.getRawDataToSign(i), tip.signature))
                 return false;
         }
         // 3
@@ -70,7 +72,28 @@ public class TxHandler {
      */
     public Transaction[] handleTxs(Transaction[] possibleTxs) {
         // IMPLEMENT THIS
-        return null;
+        TxHandler tmptx = this;
+        /*
+        for (UTXO ut: tmptx.up.getAllUTXO()) {
+            tmptx.up.addUTXO(ut, up.getTxOutput(ut));
+        }
+        */
+        ArrayList<Transaction> trarray = new ArrayList<Transaction>();
+        for (Transaction tr: possibleTxs) {
+            if (tmptx.isValidTx(tr)) {
+                for (Transaction.Input ip: tr.getInputs()) {
+                    tmptx.up.removeUTXO(new UTXO(ip.prevTxHash, ip.outputIndex));
+                }
+                for (int i = 0; i < tr.numOutputs(); i++) {
+                    tmptx.up.addUTXO(new UTXO(tr.getHash(), i), tr.getOutput(i));
+                }
+                trarray.add(tr);
+            }
+        }
+        Transaction[] tran = new Transaction[trarray.size()];
+        int i = 0;
+        for (Transaction tr: trarray)
+            tran[i++] = tr;
+        return tran;
     }
-
 }
