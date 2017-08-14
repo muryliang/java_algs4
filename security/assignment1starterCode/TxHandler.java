@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+
 public class TxHandler {
 
+    private UTXOPool up;
     /**
      * Creates a public ledger whose current UTXOPool (collection of unspent transaction outputs) is
      * {@code utxoPool}. This should make a copy of utxoPool by using the UTXOPool(UTXOPool uPool)
@@ -7,6 +10,7 @@ public class TxHandler {
      */
     public TxHandler(UTXOPool utxoPool) {
         // IMPLEMENT THIS
+        up = new UTXOPool(utxoPool);
     }
 
     /**
@@ -20,6 +24,43 @@ public class TxHandler {
      */
     public boolean isValidTx(Transaction tx) {
         // IMPLEMENT THIS
+        // 1
+        ArrayList<Transaction.Input> ips = tx.getInputs();
+        for (Transaction.Input ip: ips) {
+            if (!up.contains(new UTXO(ip.prevTxHash, ip.outputIndex)))
+                return false;
+        }
+        // 2
+        Transaction.Output op;
+        for (Transaction.Input ip: ips) {
+            op = up.getTxOutput(new UTXO(ip.prevTxHash, ip.outputIndex));
+            if (!Crypto.verifySignature(op.address, tx.getRawDataToSign(ip.outputIndex), ip.prevTxHash))
+                return false;
+        }
+        // 3
+        UTXOPool pool = new UTXOPool();
+        UTXO tmputxo;
+        for (Transaction.Input ip: ips) {
+            tmputxo = new UTXO(ip.prevTxHash, ip.outputIndex);
+            if (!pool.contains(tmputxo))
+                pool.addUTXO(tmputxo, up.getTxOutput(tmputxo));
+            else
+                return false;
+        }
+        // 4,5
+        double sumout = 0;
+        double sumin = 0;
+        for (Transaction.Output tmpop: tx.getOutputs()) {
+            if (tmpop.value < 0)
+                return false;
+            sumout += tmpop.value;
+        }
+        for (Transaction.Input tmpip: ips) {
+            sumin += up.getTxOutput(new UTXO(tmpip.prevTxHash, tmpip.outputIndex)).value;
+        }
+        if (sumout > sumin) 
+            return false;
+        return true;
     }
 
     /**
@@ -29,6 +70,7 @@ public class TxHandler {
      */
     public Transaction[] handleTxs(Transaction[] possibleTxs) {
         // IMPLEMENT THIS
+        return null;
     }
 
 }
